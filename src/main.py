@@ -15,13 +15,21 @@ if __name__ == '__main__':
     phone_book = PhoneBook()
 
     while is_continue:
-        user_input = input('\nPlease, input the command relevant desired operations: \n p - print '
-                           'phone book \n pa - print age of the person \n a - add new record \n '
-                           'u - update record \n f - find person \n fb - find person by birthday '
-                           '\n fm - find people with birthdays in next month \n fy - find people '
-                           'who are younger \n fo - find people who are older \n fa - find people '
-                           'with the age \n dns - delete record by name and surname \n dn - delete'
-                           ' record by number \n c - clear screen \n e - exit the programm \n')
+        user_input = input('\nPlease, input the command relevant desired operations: \n'
+                           'p - print phone book \n'
+                           'pa - print age of the person \n'
+                           'a - add new record \n'
+                           'u - update record \n'
+                           'f - find person \n'
+                           'fb - find person by birthday \n'
+                           'fm - find people with birthdays in next month \n'
+                           'fy - find people who are younger \n'
+                           'fo - find people who are older \n'
+                           'fa - find people with the age \n'
+                           'dns - delete record by name and surname \n'
+                           'dn - delete record by number \n'
+                           'c - clear screen \n'
+                           'e - exit the programm \n')
 
         if user_input == 'p':  # print phone book
             phone_book.print_book()
@@ -43,19 +51,17 @@ if __name__ == '__main__':
             try:
                 record = phone_book.find_record(name=name,
                                                 surname=surname).index[0]
-                user_input = input('The person already has been in the phone book. Please, choose '
-                                   'what you want to do with it: \n u - update current record \n '
-                                   'c - change name and surname of current record \n r - return to '
-                                   'main menu \n')
+                user_input = input('The person already has been in the phone book.'
+                                   'Please, choose what you want to do with it: \n'
+                                   'u - update current record \n'
+                                   'c - change name and surname of current record \n'
+                                   'r - return to main menu \n')
                 
                 if user_input == 'u':  # update current record
                     idx = phone_book.find_record(name=name,
                                                  surname=surname).index[0]
                     birthday = validation.input_birthday()
                     number = validation.input_number()
-
-                    print(idx)
-                    print(5, number)
 
                     phone_book.update_record(birthday=birthday,
                                              number=number,
