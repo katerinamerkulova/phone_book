@@ -2,6 +2,9 @@
 Docstring
 """
 
+import datetime
+import os
+
 import pandas as pd
 
 
@@ -18,15 +21,13 @@ class Birthday:
     def __init__(self, date):
         self.birth_date = date
         self.birthday = date.rsplit('/', maxsplit=1)[0]
-        self.datetime = date(self.year, self.month, self.day)
 
-        self.day = int(date.split('/')[0])
-        self.month = int(date.split('/')[1])
-        self.year = int(date.split('/')[2])
+        self.day, self.month, self.year = [int(x) for x in date.split('/')]
+        self.date_obj = datetime.date(self.year, self.month, self.day)
 
-        self.today = date.today()
-        was_bd = (self.today.month, self.today.day) < (self.month, self.day)
-        self.age = self.today.year - self.year - was_bd
+        self.today = datetime.date.today()
+        bd_not_yet = (self.today.month, self.today.day) < (self.month, self.day)
+        self.age = self.today.year - self.year - bd_not_yet
 
     def __eq__(self, other):
         return self.age == other.age
@@ -52,7 +53,7 @@ class Person:
     def __init__(self, name, surname, birthday, number):
         self.name = name
         self.surname = surname
-        self.birthday = Birthday(birthday)
+        self.birthday = birthday
         self.number = number
 
 
@@ -60,7 +61,8 @@ class PhoneBook:
 
     def __init__(self):
         try:
-            path = r'..\data\phone_book.csv'
+            # todo make path a constant at the beginning of module
+            path = os.path.join('..', 'data', 'phone_book.csv')
             self.data = pd.read_csv(path, encoding='utf-8')
         except pd.errors.EmptyDataError:
             self.data = pd.DataFrame(columns=['Name',
@@ -74,17 +76,18 @@ class PhoneBook:
         """
         print(self.data)
 
-    def add_record(self,
-                   person):
+    def add_record(self, person):
         """
         Add a record to the phone book
         :param person: ...
         """
         idx = self.data.shape[0]
-        self.data.loc[idx] = (person.name,
-                              person.surname,
-                              person.birthday,
-                              person.number)
+        self.data.loc[idx] = (
+            person.name,
+            person.surname,
+            person.birthday,
+            person.number,
+        )
 
     def find_record(self,
                     name=None,
@@ -100,8 +103,9 @@ class PhoneBook:
         :param number: mobile number of person e.g. 89245548798
         """
         if number:
-            number = int(number)
+            number = int(number)  # this is weird, why not str?
 
+        # todo this code is repeated below, implement as a function
         actual = {col: value for col, value
                   in zip(self.data.columns,
                          (name, surname, birthday, number)
@@ -113,7 +117,7 @@ class PhoneBook:
         result = self.data[row_mask]
 
         if result.shape[0] == 0:
-            print('There is no this record')
+            print('There is no such record')
 
         return result
 
