@@ -23,48 +23,35 @@ def input_surname():
         if re.match(r'[A-Za-z\d\s]+', surname):
             return surname.capitalize()
 
-def input_birthday(year=False):
-    if year: # ???
-        birthday = input('Input birthday in next format DD/MM \n') + '/1000'
-    else:
-        birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999), else '
-                         'press Enter \n')
 
-    if birthday:
-        is_birthday_correct = re.match(r'\d{2}\/\d{2}\/\d{4}', birthday)
-        if is_birthday_correct:
-            birthday = Birthday(birthday)
-        else:
-            # try again
-            pass
-
-        birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999),'
-                         'else press Enter \n')
-
+def validate_date(date):
+    while True:
         try:
-            if birthday.today <= birthday.birth_date:
+            if date.today <= date.birth_date:
                 print('birthday should be in the past')
             else:
-                return birthday
+                return True
 
         except ValueError as error:
             print(error)
-            is_birthday_correct = False
+            return False
 
-        while not is_birthday_correct:
-            birthday = Birthday(input('The birthday should be in next format DD/MM/YYYY \n'))
 
-            try:
-                if birthday.today <= birthday.birth_date:
-                    print('birthday should be in the past')
-                    is_birthday_correct = False
-                else:
-                    is_birthday_correct = True
+def input_birth_date():
+    birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999),'
+                     'else press Enter \n')
+    while birthday:
+        if re.match(r'\d{2}\/\d{2}\/\d{4}', birthday):
+            birthday = Birthday(birthday)
+            if validate_date(birthday):
+                return birthday
 
-            except ValueError as error:
-                print(error)
-                is_birthday_correct = False
-    return birthday
+        birthday = input('The birthday should be in next format DD/MM/YYYY \n')
+
+
+def input_birthday():
+    birthday = input('Input birthday in next format DD/MM \n')
+    birthday = Birthday(birthday + '/1000')
 
 
 def input_number():
