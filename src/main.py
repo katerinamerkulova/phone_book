@@ -131,7 +131,7 @@ if __name__ == '__main__':
             idx_list = []
             for idx, bd in enumerate(phone_book.data['Birthday']):
                 bd = Birthday(bd)
-                if abs((bd.datetime - bd.today).days) < 31:
+                if abs((bd.date_obj - bd.today).days) < 31:
                     idx_list.append(idx)
             print(phone_book.data.loc[idx_list, :])
 
