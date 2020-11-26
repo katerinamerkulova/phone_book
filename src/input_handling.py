@@ -4,32 +4,43 @@ Docstring
 
 import re
 
-from phone_book import Birthday
+from phone_book import BirthDate
 
-# todo rename module more appropriately
 
-# todo merge input_name and input_surname as one function, they are almost the same
-def input_name():
-    print('Please, input attributes of the person.')
+def input_name(message: str) -> str:
+    """
+    Docstring
+    """
     while True:
-        name = input('The name should consist only latin characters,'
-                      'digits or white spaces e.g. Lena \n')
+        name = input(message)
         if re.match(r'[A-Za-z\d\s]+', name):
             return name.capitalize()
 
 
-def input_surname():
-    while True:
-        surname = input('The surname should consist only latin characters,'
-                        'digits or white spaces e.g. Osipova \n')
-        if re.match(r'[A-Za-z\d\s]+', surname):
-            return surname.capitalize()
+def input_firstname() -> str:
+    """
+    Docstring
+    """
+    print('Please, input attributes of the person.')
+    message = 'The firstname should consist only latin characters, digits or white spaces e.g. Lena \n'
+    return input_name(message)
 
 
-def validate_birthday(date):
+def input_lastname() -> str:
+    """
+    Docstring
+    """
+    message = 'The lastname should consist only latin characters, digits or white spaces e.g. Osipova \n'
+    return input_name(message)
+
+
+def validate_birth_date(date: BirthDate) -> bool:
+    """
+    Docstring
+    """
     try:
         if date.today <= date.birth_date:
-            print('birthday should be in the past')
+            print('birth date should be in the past')
         else:
             return True
 
@@ -38,48 +49,61 @@ def validate_birthday(date):
         return False
 
 
-def input_birth_date():
-    birth_date = input('If you want to add birthday, please input it (e.g. 31/01/1999),'
-                     'else press Enter \n')
+def input_birth_date() -> BirthDate:
+    """
+    Docstring
+    """
+    birth_date = input(
+        'If you want to add birth date, please input it (e.g. 31/01/1999),'
+        'else press Enter \n'
+        )
     while birth_date:
         if re.match(r'\d{2}/\d{2}/\d{4}', birth_date):
-            birth_date = Birthday(birth_date)
-            if validate_birthday(birth_date):
+            birth_date = Birth_date(birth_date)
+            if validate_birth_date(birth_date):
                 return birth_date
 
-        birth_date = input('The birthday should be in next format DD/MM/YYYY \n')
+        birth_date = input('The birth date should be in next format DD/MM/YYYY \n')
+    
+    return birth_date
 
 
-def input_birthday():
+def input_birthday() -> str:
     """
-    Reimplement as:
-    while True:
-        get_user_input
-        validation1 - as a function (outside input_birthday)
-        validation2
-        ...
-        if all_ok:
-            return True
+    Docstring
     """
     birthday = input('Input birthday in next format DD/MM \n')
-    birthday = Birthday(birthday + '/1000')
-    # todo
+
+    while True:
+        if re.match(r'\d{2}/\d{2}', birthday):
+            try:
+                BirthDate.date_obj(birthday + '/1000')
+                return birthday
+
+            except ValueError as error:
+                birthday = input(error)
 
 
-def input_number():
+def input_number() -> str:
+    """
+    Docstring
+    """
     number = input('phone number (e.g. 89245548798) \n')
-    number = re.sub(r'\+7', '8', number)
-    is_number_correct = re.match(r'\d{11}', number)
-    while not is_number_correct:  # -> while True
-        number = input('The number should consist of 11 digits and start with 8 e.g. '
-                       '89245548798 \n')
-        is_number_correct = re.match(r'\d{11}', number)
-    return number
+
+    while True:
+        number = re.sub(r'\+7', '8', number)
+        if re.match(r'\d{11}', number):
+            return number
+        else:
+            number = input('The number should consist of 11 digits and start with 8'
+                           'e.g. 89245548798 \n')
 
 
-def input_to_find():
-    # todo reimplement as {'name': ..., ...}
-    name, surname, birthday, number = None, None, None, None
+def input_to_find() -> dict:
+    """
+    Docstring
+    """
+    actual = dict()
     num = input('How many attributes to input? (e.g. 2) \n')
 
     while num not in {'1', '2', '3', '4'}:
@@ -87,19 +111,23 @@ def input_to_find():
 
     for i in range(int(num)):
         input_attr = input(
-            'Input the command relevant attribute: \n n - Name \n s - Surname \n b - Birthday \n '
-            'p - Phone Number \n')
+            'Input the command relevant attribute: \n'
+            'f - Firstname \n'
+            'l - Lastname \n'
+            'b - Birth date \n'
+            'p - Phone Number \n'
+            )
 
         if input_attr == 'n':
-            name = input_name()
+            actual['Firstname'] = input_firstname()
 
         elif input_attr == 's':
-            surname = input_surname()
+            actual['Lastname'] = input_lastname()
 
         elif input_attr == 'b':
-            birthday = input_birthday()
+            actual['Birth date'] = input_birth_date()
 
         elif input_attr == 'p':
-            number = input_number()
+            actual['Phone number'] = input_number()
 
-    return name, surname, birthday, number
+    return actual
