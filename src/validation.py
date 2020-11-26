@@ -11,7 +11,7 @@ def input_name():
     print('Please, input attributes of the person.')
     while True:
         name = input('The name should consist only latin characters,'
-                      'digits or white spaces, first letter must be capital e.g. Lena \n')  
+                      'digits or white spaces e.g. Lena \n')  
         if re.match(r'[A-Za-z\d\s]+', name):
             return name.capitalize()
 
@@ -19,7 +19,7 @@ def input_name():
 def input_surname():
     while True:
         surname = input('The surname should consist only latin characters,'
-                        'digits or white spaces, first letter must be capital e.g. Osipova \n')
+                        'digits or white spaces e.g. Osipova \n')
         if re.match(r'[A-Za-z\d\s]+', surname):
             return surname.capitalize()
 
