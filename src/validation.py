@@ -1,8 +1,7 @@
-'''
+"""
 Docstring
-'''
+"""
 
-from datetime import date
 import re
 
 from phone_book import Birthday
@@ -24,18 +23,23 @@ def input_surname():
         if re.match(r'[A-Za-z\d\s]+', surname):
             return surname.capitalize()
 
-
 def input_birthday(year=False):
     if year: # ???
         birthday = input('Input birthday in next format DD/MM \n') + '/1000'
     else:
-        birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999),'
-                         'else press Enter \n')
+        birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999), else '
+                         'press Enter \n')
 
-    while birthday:
-        if re.match(r'\d{2}\/\d{2}\/\d{4}', birthday):
+    if birthday:
+        is_birthday_correct = re.match(r'\d{2}\/\d{2}\/\d{4}', birthday)
+        if is_birthday_correct:
             birthday = Birthday(birthday)
         else:
+            # try again
+            pass
+
+        birthday = input('If you want to add birthday, please input it (e.g. 31/01/1999),'
+                         'else press Enter \n')
 
         try:
             if birthday.today <= birthday.birth_date:
@@ -46,10 +50,9 @@ def input_birthday(year=False):
         except ValueError as error:
             print(error)
             is_birthday_correct = False
-        
+
         while not is_birthday_correct:
             birthday = Birthday(input('The birthday should be in next format DD/MM/YYYY \n'))
-            is_birthday_correct = re.match(r'\d{2}\/\d{2}\/\d{4}', birthday)
 
             try:
                 if birthday.today <= birthday.birth_date:
@@ -62,6 +65,7 @@ def input_birthday(year=False):
                 print(error)
                 is_birthday_correct = False
     return birthday
+
 
 def input_number():
     number = input('number (e.g. 89245548798) \n')
@@ -83,7 +87,9 @@ def input_to_find():
         num = input('You have inputed not a number. Please, input the number between 1 and 4 \n')
 
     for i in range(int(num)):
-        input_attr = input('Input the command relevant attribute: \n n - Name \n s - Surname \n b - Birthday \n nb - Number \n')
+        input_attr = input(
+            'Input the command relevant attribute: \n n - Name \n s - Surname \n b - Birthday \n '
+            'nb - Number \n')
 
         if input_attr == 'n':
             name = input_name()
@@ -98,4 +104,3 @@ def input_to_find():
             number = input_number()
 
     return name, surname, birthday, number
-
