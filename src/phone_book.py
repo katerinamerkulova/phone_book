@@ -61,6 +61,7 @@ class PhoneBook:
 
     def __init__(self):
         try:
+            # todo make path a constant at the beginning of module
             path = os.path.join('..', 'data', 'phone_book.csv')
             self.data = pd.read_csv(path, encoding='utf-8')
         except pd.errors.EmptyDataError:
