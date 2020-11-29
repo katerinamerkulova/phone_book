@@ -1,5 +1,6 @@
-Name,Surname,Birthday,Number
+Firstname,Lastname,Birth date,Phone number
 Katerine,Krisova,25/11/2020,89234567890
 Vasya,Pupkin,25/11/1990,89010220303
-Pavel,Kosipov,31/01/1999,89561234576
-Lena,Osipova,31/05/1975,89561234576
+Pavel,Kosipov,28/12/1999,89561234576
+Lena,Osipova,31/01/1975,89561234576
+Marina,Perminova,05/07/1995,89567589595

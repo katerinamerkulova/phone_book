@@ -8,7 +8,8 @@ import os
 import pandas as pd
 
 
-class Birthday:
+class BirthDate:
+
     """
     .birth_date DD/MM/YYYY
     .birthday DD/MM
@@ -18,7 +19,7 @@ class Birthday:
     __eq__
     """
 
-    def __init__(self, date):
+    def __init__(self, date: str):
         self.birth_date = date
         self.birthday = date.rsplit('/', maxsplit=1)[0]
 
@@ -29,72 +30,86 @@ class Birthday:
         bd_not_yet = (self.today.month, self.today.day) < (self.month, self.day)
         self.age = self.today.year - self.year - bd_not_yet
 
-    def __eq__(self, other):
+    def __str__(self) -> str:
+        return self.birth_date
+
+    def __eq__(self, other: 'BirthDate') -> bool:
+        if isinstance(other, str):
+            return str(self) == other
         return self.age == other.age
 
-    def __gt__(self, other):
+    def __gt__(self, other: 'BirthDate') -> bool:
         return self.age > other.age
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'BirthDate') -> bool:
         return self.age < other.age
-
-    def __str__(self):
-        return self.birth_date
 
 
 class Person:
+
     """
-    .name
+    .firstname
     .surname
-    .birthday
+    .birth_date
     .number
     """
 
-    def __init__(self, name, surname, birthday, number):
-        self.name = name
-        self.surname = surname
-        self.birthday = birthday
+    def __init__(
+            self,
+            firstname: str,
+            lastname: str,
+            birth_date: BirthDate,
+            number: str,
+        ):
+        self.firstname = firstname
+        self.lastname = lastname
+        self.birth_date = birth_date
         self.number = number
 
 
 class PhoneBook:
 
+    """
+    Docstring
+    """
+
+    path = os.path.join('..', 'data', 'phone_book.csv')
+
     def __init__(self):
         try:
-            # todo make path a constant at the beginning of module
-            path = os.path.join('..', 'data', 'phone_book.csv')
-            self.data = pd.read_csv(path, encoding='utf-8')
+            self.data = pd.read_csv(self.path, encoding='utf-8', dtype=str)
         except pd.errors.EmptyDataError:
-            self.data = pd.DataFrame(columns=['Name',
-                                              'Surname',
-                                              'Birthday',
-                                              'Number'])
+            self.data = pd.DataFrame(
+                columns=[
+                    'Firstname',
+                    'Lastname',
+                    'Birth date',
+                    'Phone number',
+                    ]
+                )
 
-    def print_book(self):
+    def print_book(self) -> bool:
         """
         Print all items to the screen
         """
         print(self.data)
+        return True
 
-    def add_record(self, person):
+    def add_record(self, person: Person) -> bool:
         """
         Add a record to the phone book
         :param person: ...
         """
         idx = self.data.shape[0]
         self.data.loc[idx] = (
-            person.name,
-            person.surname,
-            person.birthday,
+            person.firstname,
+            person.lastname,
+            person.birth_date,
             person.number,
         )
+        return True
 
-    def find_record(self,
-                    name=None,
-                    surname=None,
-                    birthday=None,
-                    number=None,
-                    ):
+    def find_record(self, actual: dict) -> pd.core.frame.DataFrame:
         """
         Find record by values in columns
         :param name: name of person e.g. Lena
@@ -102,17 +117,10 @@ class PhoneBook:
         :param birthday: birthday of person e.g. 31/01/1999
         :param number: mobile number of person e.g. 89245548798
         """
-        if number:
-            number = int(number)  # this is weird, why not str?
 
-        # todo this code is repeated below, implement as a function
-        actual = {col: value for col, value
-                  in zip(self.data.columns,
-                         (name, surname, birthday, number)
-                         ) if value
-                  }
         mask = self.data[actual.keys()] == actual.values()
-        row_mask = [any(row) for i, row in mask.iterrows()]
+
+        row_mask = [all(row) for i, row in mask.iterrows()]
 
         result = self.data[row_mask]
 
@@ -121,37 +129,32 @@ class PhoneBook:
 
         return result
 
-    def update_record(self,
-                      name=None,
-                      surname=None,
-                      birthday=None,
-                      number=None,
-                      idx=None):
+    def update_record(self, actual: dict, idx: int)-> bool:
         """
+        Docstring
         """
-        actual = {col: value for col, value
-                  in zip(self.data.columns,
-                         (name, surname, birthday, number)
-                         ) if value
-                  }
         self.data.loc[idx, actual.keys()] = [*actual.values()]
+        return True
 
-    def delete_record(self,
-                      name=None,
-                      surname=None,
-                      birthday=None,
-                      number=None,
-                      ):
+    def delete_record(self, actual: dict) -> bool:
         """
+        Docstring
         """
+        data = self.find_record(actual)
 
-        data = self.find_record(name=name,
-                                surname=surname,
-                                birthday=birthday,
-                                number=number)
+        if data.shape[0] == 0:
+            return False
+
         if data.shape[0] > 1:
             print(data)
             idx = int(input('Input the index of the record to delete (e.g. 1) \n'))
+
         else:
             idx = data.index[0]
+
         self.data.drop([idx], axis=0, inplace=True)
+        return True
+    
+    def save_phone_book(self) -> bool:
+        self.data.to_csv(self.path, encoding='utf-8', index=False)
+        return True
