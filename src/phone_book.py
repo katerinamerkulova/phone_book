@@ -30,17 +30,19 @@ class BirthDate:
         bd_not_yet = (self.today.month, self.today.day) < (self.month, self.day)
         self.age = self.today.year - self.year - bd_not_yet
 
-    def __eq__(self, other: BirthDate) -> bool:
-        return self.age == other.age
-
-    def __gt__(self, other: BirthDate) -> bool:
-        return self.age > other.age
-
-    def __lt__(self, other: BirthDate) -> bool:
-        return self.age < other.age
-
     def __str__(self) -> str:
         return self.birth_date
+
+    def __eq__(self, other: 'BirthDate') -> bool:
+        if isinstance(other, str):
+            return str(self) == other
+        return self.age == other.age
+
+    def __gt__(self, other: 'BirthDate') -> bool:
+        return self.age > other.age
+
+    def __lt__(self, other: 'BirthDate') -> bool:
+        return self.age < other.age
 
 
 class Person:
@@ -75,14 +77,14 @@ class PhoneBook:
 
     def __init__(self):
         try:
-            self.data = pd.read_csv(self.path, encoding='utf-8')
+            self.data = pd.read_csv(self.path, encoding='utf-8', dtype=str)
         except pd.errors.EmptyDataError:
             self.data = pd.DataFrame(
                 columns=[
                     'Firstname',
                     'Lastname',
                     'Birth date',
-                    'Number',
+                    'Phone number',
                     ]
                 )
 
@@ -138,11 +140,13 @@ class PhoneBook:
         Docstring
         """
         data = self.find_record(actual)
+
         if data.shape[0] > 1:
             print(data)
             idx = int(input('Input the index of the record to delete (e.g. 1) \n'))
         else:
             idx = data.index[0]
+
         self.data.drop([idx], axis=0, inplace=True)
         return True
     

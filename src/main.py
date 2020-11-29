@@ -2,6 +2,7 @@
 Docstring
 """
 
+from datetime import date
 import os
 
 from phone_book import BirthDate, PhoneBook, Person
@@ -28,6 +29,7 @@ def get_user_input() -> str:
         'df - delete record by phone number \n'
         'c - clear screen \n'
         'e - exit the programm \n'
+        '>> '
         )
     return user_input
 
@@ -38,11 +40,13 @@ def print_age() -> bool:
     """
     firstname = input_handling.input_firstname()
     lastname = input_handling.input_lastname()
-    
-    idx = phone_book.find_record(
-        firstname=firstname,
-        lastname=lastname,
-        ).index[0]
+
+    actual = {
+        'Firstname': firstname,
+        'Lastname': lastname,
+        }
+
+    idx = phone_book.find_record(actual).index[0]
     birth_date = BirthDate(
         phone_book.data.loc[idx, 'Birth date']
         )
@@ -57,56 +61,49 @@ def get_additional_user_input() -> str:
     Docstring
     """
     user_input = input(
-        'The person already has been in the phone book.'
+        'The person already has been in the phone book. '
         'Please, choose what you want to do with it: \n'
         'u - update current record \n'
         'c - change name of current record \n'
         'r - return to main menu \n'
+        '>> '
         )
     return user_input
 
 
-def update_current_record(
-    firstname: str,
-    lastname: str,
-    ) -> bool:
+def update_current_record(actual: dict) -> bool:
     """
     Docstring
     """
-    idx = phone_book.find_record(
-        firstname=firstname,
-        lastname=lastname,
-        ).index[0]
+    idx = phone_book.find_record(actual).index[0]
 
     birth_date = input_handling.input_birth_date()
     number = input_handling.input_number()
 
     phone_book.update_record(
-        birth_date=birth_date,
-        number=number,
+        {
+            'Birth date': birth_date,
+            'Phone number': number,
+            },
         idx=idx,
         )
     return True
 
 
-def change_name_of_current_record(
-    firstname: str,
-    lastname: str,
-    ) -> bool:
+def change_name_of_current_record(actual: dict) -> bool:
     """
     Docstring
     """
     new_firstname = input_handling.input_firstname()
     new_lastname = input_handling.input_lastname()
 
-    idx = phone_book.find_record(
-        firstname=firstname,
-        lastname=lastname,
-        ).index[0]
+    idx = phone_book.find_record(actual).index[0]
 
     phone_book.update_record(
-        firstname=new_firstname,
-        lastname=new_lastname,
+        {
+            'Firstname': new_firstname,
+            'Lastname': new_lastname,
+            },
         idx=idx,
         )
     return True
@@ -119,11 +116,13 @@ def add_record() -> bool:
     firstname = input_handling.input_firstname()
     lastname = input_handling.input_lastname()
 
+    actual = {
+        'Firstname': firstname,
+        'Lastname': lastname,
+        }
+
     try:
-        record = phone_book.find_record(
-            firstname=firstname,
-            lastname=lastname,
-            ).index[0]
+        record = phone_book.find_record(actual).index[0]
 
     except IndexError:
         birth_date = input_handling.input_birth_date()
@@ -138,17 +137,11 @@ def add_record() -> bool:
         user_input = get_additional_user_input()
         
         if user_input == 'u':  # update current record
-            res = update_current_record(
-                    firstname=firstname,
-                    lastname=lastname,
-                    )
+            res = update_current_record(actual)
             return res
 
         elif user_input == 'c':  # change name of current record
-            res = change_name_of_current_record(
-                    firstname=firstname,
-                    lastname=lastname,
-                    )
+            res = change_name_of_current_record(actual)
             return res
 
         elif user_input == 'r':  # return to main menu
@@ -160,23 +153,21 @@ def update_record() -> bool:
     Docstring
     """
     print('Which person do you want to update?')
-    firstname, lastname, birth_date, number = input_handling.input_to_find()
+    actual = input_handling.input_to_find()
 
-    idx = phone_book.find_record(
-        firstname=firstname,
-        lastname=lastname,
-        birth_date=birth_date,
-        number=number,
-        ).index[0]
+    data = phone_book.find_record(actual)
+    
+    if data.shape[0] > 1:
+        print(data)
+        idx = int(input('Input the index of the record to update (e.g. 1) \n'))
+    else:
+        idx = data.index[0]
 
     print('What attribute do you want to update?')
-    firstname, lastname, birth_date, number = input_handling.input_to_find()
+    actual = input_handling.input_to_find()
 
     phone_book.update_record(
-        firstname=firstname,
-        lastname=lastname,
-        birth_date=birth_date,
-        number=number,
+        actual=actual,
         idx=idx,
         )
     return True
@@ -187,25 +178,21 @@ def find_person() -> bool:
     Docstring
     """
     print('Search it by which column(s)?')
-    firstname, lastname, birth_date, number = input_handling.input_to_find()
+    actual = input_handling.input_to_find()
 
-    res = phone_book.find_record(
-        firstname=firstname,
-        lastname=lastname,
-        birth_date=birth_date,
-        number=number,
-        )
+    res = phone_book.find_record(actual)
     print(res)
 
     return True
 
 
-def find_birth_date_by_condition(function: function) -> bool:
+def find_birth_date_by_condition(function: 'function') -> bool:
     """
     Docstring
     """
     idx_list = []
     for idx, bd in enumerate(phone_book.data['Birth date']):
+        bd = BirthDate(bd)
         if function(bd):
             idx_list.append(idx)
 
@@ -214,15 +201,15 @@ def find_birth_date_by_condition(function: function) -> bool:
     return True
 
 
-def find_person_by_birth_date() -> bool:
+def find_person_by_birthday() -> bool:
     """
     Docstring
     """
-    birth_date = BirthDate(input_handling.input_birth_date())
+    birthday = input_handling.input_birthday()
 
     res = find_birth_date_by_condition(
-        (lambda x: x.month == birth_date.month 
-            and x.day == birth_date.day
+        (lambda x: x.month == birthday.month 
+            and x.day == birthday.day
             )
         )
 
@@ -234,7 +221,10 @@ def find_people_with_birthdays_in_next_month() -> bool:
     Docstring
     """
     res = find_birth_date_by_condition(
-        (lambda x: abs((x.date_obj - x.today).days) < 31)
+        (lambda x: 0 <= (
+            date(x.today.year, x.month, x.day) - 
+            x.today
+            ).days < 31)
         )
 
     return res
@@ -244,7 +234,7 @@ def find_people_who_are_younger()-> bool:
     """
     Docstring
     """
-    age = int(input('Input age (e.g. 27) \n'))
+    age = int(input('Input age (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age < age))
 
@@ -253,7 +243,7 @@ def find_people_who_are_older() -> bool:
     """
     Docstring
     """
-    age = int(input('Input age to comparison (e.g. 27) \n'))
+    age = int(input('Input age to comparison (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age > age))
 
@@ -262,7 +252,7 @@ def find_people_with_the_age() -> bool:
     """
     Docstring
     """
-    age = int(input('Input age to comparison (e.g. 27) \n'))
+    age = int(input('Input age to comparison (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age == age))
 
@@ -288,30 +278,6 @@ def delete_record_by_number() -> bool:
     number = input_handling.input_number()
     phone_book.delete_record(number=number)
     return True
-
-
-def get_user_input() -> str:
-    """
-    Docstring
-    """
-    user_input = input(
-        '\nPlease, input the command relevant desired operations: \n'
-        'p - print phone book \n'
-        'pa - print age of the person \n'
-        'a - add new record \n'
-        'u - update record \n'
-        'f - find person \n'
-        'fb - find person by birth date \n'
-        'fm - find people with birthdays in next month \n'
-        'fy - find people who are younger \n'
-        'fo - find people who are older \n'
-        'fa - find people with the age \n'
-        'dn - delete record by name \n'
-        'df - delete record by phone number \n'
-        'c - clear screen \n'
-        'e - exit the programm \n'
-        )
-    return user_input
 
 
 def handle_user_input(user_input: str) -> bool:
@@ -369,6 +335,8 @@ def main() -> bool:
     Docstring
     """
     print("Hello, dear User! I'm your pleasant programm to work with phone books.")
+
+    global phone_book
     phone_book = PhoneBook()
 
     while True:
