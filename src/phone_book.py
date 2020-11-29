@@ -119,7 +119,8 @@ class PhoneBook:
         """
 
         mask = self.data[actual.keys()] == actual.values()
-        row_mask = [any(row) for i, row in mask.iterrows()]
+
+        row_mask = [all(row) for i, row in mask.iterrows()]
 
         result = self.data[row_mask]
 
@@ -141,9 +142,13 @@ class PhoneBook:
         """
         data = self.find_record(actual)
 
+        if data.shape[0] == 0:
+            return False
+
         if data.shape[0] > 1:
             print(data)
             idx = int(input('Input the index of the record to delete (e.g. 1) \n'))
+
         else:
             idx = data.index[0]
 
@@ -151,5 +156,5 @@ class PhoneBook:
         return True
     
     def save_phone_book(self) -> bool:
-        save.data.to_csv(self.path, encoding='utf-8', index=False)
+        self.data.to_csv(self.path, encoding='utf-8', index=False)
         return True

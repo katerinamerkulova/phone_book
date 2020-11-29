@@ -34,19 +34,23 @@ def input_lastname() -> str:
     return input_name(message)
 
 
-def validate_birth_date(date: BirthDate) -> bool:
+def validate_birth_date(date: str) -> bool:
     """
     Docstring
     """
     try:
-        if date.today <= date.date_obj:
-            print('birth date should be in the past')
-        else:
-            return True
+        date = BirthDate(date)
 
     except ValueError as error:
         print(error)
         return False
+
+    else:
+        if date.today <= date.date_obj:
+            print('birth date should be in the past')
+            return False
+        else:
+            return True
 
 
 def input_birth_date() -> BirthDate:
@@ -59,7 +63,6 @@ def input_birth_date() -> BirthDate:
         )
     while birth_date:
         if re.match(r'\d{2}/\d{2}/\d{4}', birth_date):
-            birth_date = BirthDate(birth_date)
             if validate_birth_date(birth_date):
                 return birth_date
 
@@ -91,10 +94,10 @@ def input_number() -> str:
 
     while True:
         number = re.sub(r'\+7', '8', number)
-        if re.match(r'\d{11}', number):
+        if re.match(r'^8\d{10}$', number):
             return number
         else:
-            number = input('The number should consist of 11 digits and start with 8'
+            number = input('The number should consist of 11 digits and start with 8 '
                            'e.g. 89245548798 \n>> ')
 
 

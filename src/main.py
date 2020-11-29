@@ -26,7 +26,7 @@ def get_user_input() -> str:
         'fo - find people who are older \n'
         'fa - find people with the age \n'
         'dn - delete record by name \n'
-        'df - delete record by phone number \n'
+        'dp - delete record by phone number \n'
         'c - clear screen \n'
         'e - exit the programm \n'
         '>> '
@@ -265,8 +265,10 @@ def delete_record_by_name() -> bool:
     lastname = input_handling.input_lastname()
 
     phone_book.delete_record(
-        firstname=firstname,
-        lastname=lastname,
+        {
+            'Firstname': firstname,
+            'Lastname': lastname,
+            }
         )
     return True
 
@@ -276,7 +278,7 @@ def delete_record_by_number() -> bool:
     Docstring
     """
     number = input_handling.input_number()
-    phone_book.delete_record(number=number)
+    phone_book.delete_record({'Phone number': number})
     return True
 
 
@@ -321,12 +323,13 @@ def handle_user_input(user_input: str) -> bool:
         return delete_record_by_number()
 
     if user_input == 'c':  # clear screen
-        return os.system('cls')
+        _ = os.system('cls')
+        return True
 
     if user_input == 'e':  # exit the programm
         return False
 
-    print('You have entered not a number of possible operations. Please do it next time.')
+    print('You have entered not a code of possible operations. Please do it next time.')
     return True
 
 
