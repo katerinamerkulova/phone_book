@@ -1,6 +1,4 @@
-"""
-Docstring
-"""
+
 
 import re
 
@@ -8,9 +6,6 @@ from phone_book import BirthDate
 
 
 def input_name(message: str) -> str:
-    """
-    Docstring
-    """
     while True:
         name = input(message)
         if re.match(r'[A-Za-z\d\s]+', name):
@@ -18,26 +13,17 @@ def input_name(message: str) -> str:
 
 
 def input_firstname() -> str:
-    """
-    Docstring
-    """
     print('Please, input attributes of the person.')
     message = 'The firstname should consist only latin characters, digits or white spaces e.g. Lena \n>> '
     return input_name(message)
 
 
 def input_lastname() -> str:
-    """
-    Docstring
-    """
     message = 'The lastname should consist only latin characters, digits or white spaces e.g. Osipova \n>> '
     return input_name(message)
 
 
 def validate_birth_date(date: str) -> bool:
-    """
-    Docstring
-    """
     try:
         date = BirthDate(date)
 
@@ -54,9 +40,6 @@ def validate_birth_date(date: str) -> bool:
 
 
 def input_birth_date() -> BirthDate:
-    """
-    Docstring
-    """
     birth_date = input(
         'If you want to add birth date, please input it (e.g. 31/01/1999), '
         'else press Enter \n>> '
@@ -72,9 +55,6 @@ def input_birth_date() -> BirthDate:
 
 
 def input_birthday() -> str:
-    """
-    Docstring
-    """
     birthday = input('Input birthday in next format DD/MM \n>> ')
 
     while True:
@@ -87,9 +67,6 @@ def input_birthday() -> str:
 
 
 def input_number() -> str:
-    """
-    Docstring
-    """
     number = input('phone number (e.g. 89245548798) \n>> ')
 
     while True:
@@ -102,9 +79,6 @@ def input_number() -> str:
 
 
 def input_to_find() -> dict:
-    """
-    Docstring
-    """
     actual = dict()
     num = input('How many attributes to input? (e.g. 2) \n>> ')
 

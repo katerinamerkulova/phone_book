@@ -1,6 +1,4 @@
-"""
-Docstring
-"""
+
 
 from datetime import date
 import os
@@ -10,9 +8,6 @@ import input_handling
 
 
 def get_user_input() -> str:
-    """
-    Docstring
-    """
     user_input = input(
         '\nPlease, input the command relevant desired operations: \n'
         'p - print phone book \n'
@@ -35,9 +30,6 @@ def get_user_input() -> str:
 
 
 def print_age() -> bool:
-    """
-    Docstring
-    """
     firstname = input_handling.input_firstname()
     lastname = input_handling.input_lastname()
 
@@ -57,9 +49,6 @@ def print_age() -> bool:
 
 
 def get_additional_user_input() -> str:
-    """
-    Docstring
-    """
     user_input = input(
         'The person already has been in the phone book. '
         'Please, choose what you want to do with it: \n'
@@ -72,9 +61,6 @@ def get_additional_user_input() -> str:
 
 
 def update_current_record(actual: dict) -> bool:
-    """
-    Docstring
-    """
     idx = phone_book.find_record(actual).index[0]
 
     birth_date = input_handling.input_birth_date()
@@ -91,9 +77,6 @@ def update_current_record(actual: dict) -> bool:
 
 
 def change_name_of_current_record(actual: dict) -> bool:
-    """
-    Docstring
-    """
     new_firstname = input_handling.input_firstname()
     new_lastname = input_handling.input_lastname()
 
@@ -110,9 +93,6 @@ def change_name_of_current_record(actual: dict) -> bool:
 
 
 def add_record() -> bool:
-    """
-    Docstring
-    """
     firstname = input_handling.input_firstname()
     lastname = input_handling.input_lastname()
 
@@ -149,9 +129,6 @@ def add_record() -> bool:
 
 
 def update_record() -> bool:
-    """
-    Docstring
-    """
     print('Which person do you want to update?')
     actual = input_handling.input_to_find()
 
@@ -174,9 +151,6 @@ def update_record() -> bool:
 
 
 def find_person() -> bool:
-    """
-    Docstring
-    """
     print('Search it by which column(s)?')
     actual = input_handling.input_to_find()
 
@@ -187,9 +161,6 @@ def find_person() -> bool:
 
 
 def find_birth_date_by_condition(function: 'function') -> bool:
-    """
-    Docstring
-    """
     idx_list = []
     for idx, bd in enumerate(phone_book.data['Birth date']):
         bd = BirthDate(bd)
@@ -202,9 +173,6 @@ def find_birth_date_by_condition(function: 'function') -> bool:
 
 
 def find_person_by_birthday() -> bool:
-    """
-    Docstring
-    """
     birthday = input_handling.input_birthday()
 
     res = find_birth_date_by_condition(
@@ -217,9 +185,6 @@ def find_person_by_birthday() -> bool:
 
 
 def find_people_with_birthdays_in_next_month() -> bool:
-    """
-    Docstring
-    """
     res = find_birth_date_by_condition(
         (lambda x: 0 <= (
             date(x.today.year, x.month, x.day) - 
@@ -231,36 +196,24 @@ def find_people_with_birthdays_in_next_month() -> bool:
 
 
 def find_people_who_are_younger()-> bool:
-    """
-    Docstring
-    """
     age = int(input('Input age (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age < age))
 
 
 def find_people_who_are_older() -> bool:
-    """
-    Docstring
-    """
     age = int(input('Input age to comparison (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age > age))
 
 
 def find_people_with_the_age() -> bool:
-    """
-    Docstring
-    """
     age = int(input('Input age to comparison (e.g. 27) \n>> '))
 
     return find_birth_date_by_condition((lambda x: x.age == age))
 
 
 def delete_record_by_name() -> bool:
-    """
-    Docstring
-    """
     firstname = input_handling.input_firstname()
     lastname = input_handling.input_lastname()
 
@@ -274,18 +227,12 @@ def delete_record_by_name() -> bool:
 
 
 def delete_record_by_number() -> bool:
-    """
-    Docstring
-    """
     number = input_handling.input_number()
     phone_book.delete_record({'Phone number': number})
     return True
 
 
 def handle_user_input(user_input: str) -> bool:
-    """
-    Docstring
-    """
     if user_input == 'p':  # print phone book
         return phone_book.print_book()
 
@@ -333,10 +280,7 @@ def handle_user_input(user_input: str) -> bool:
     return True
 
 
-def main() -> bool:    
-    """
-    Docstring
-    """
+def main() -> bool:
     print("Hello, dear User! I'm your pleasant programm to work with phone books.")
 
     global phone_book
@@ -354,7 +298,6 @@ def main() -> bool:
 
 
 if __name__ == '__main__':
-
     if main():
         print('Succesfully done!')
     else:

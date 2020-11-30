@@ -1,6 +1,4 @@
-"""
-Docstring
-"""
+
 
 import datetime
 import os
@@ -69,10 +67,6 @@ class Person:
 
 class PhoneBook:
 
-    """
-    Docstring
-    """
-
     path = os.path.join('..', 'data', 'phone_book.csv')
 
     def __init__(self):
@@ -130,16 +124,12 @@ class PhoneBook:
         return result
 
     def update_record(self, actual: dict, idx: int)-> bool:
-        """
-        Docstring
-        """
+
         self.data.loc[idx, actual.keys()] = [*actual.values()]
         return True
 
     def delete_record(self, actual: dict) -> bool:
-        """
-        Docstring
-        """
+
         data = self.find_record(actual)
 
         if data.shape[0] == 0:
