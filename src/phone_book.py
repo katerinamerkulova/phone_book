@@ -1,5 +1,3 @@
-
-
 import datetime
 import os
 
@@ -7,15 +5,6 @@ import pandas as pd
 
 
 class BirthDate:
-
-    """
-    .birth_date DD/MM/YYYY
-    .birthday DD/MM
-    .datetime
-    __gt__ (greater than) ~ >
-    __lt__ (lower than) ~ <
-    __eq__
-    """
 
     def __init__(self, date: str):
         self.birth_date = date
@@ -44,13 +33,6 @@ class BirthDate:
 
 
 class Person:
-
-    """
-    .firstname
-    .surname
-    .birth_date
-    .number
-    """
 
     def __init__(
             self,
@@ -83,17 +65,10 @@ class PhoneBook:
                 )
 
     def print_book(self) -> bool:
-        """
-        Print all items to the screen
-        """
         print(self.data)
         return True
 
     def add_record(self, person: Person) -> bool:
-        """
-        Add a record to the phone book
-        :param person: ...
-        """
         idx = self.data.shape[0]
         self.data.loc[idx] = (
             person.firstname,
@@ -104,14 +79,6 @@ class PhoneBook:
         return True
 
     def find_record(self, actual: dict) -> pd.core.frame.DataFrame:
-        """
-        Find record by values in columns
-        :param name: name of person e.g. Lena
-        :param surname: surname of person e.g. Osipova
-        :param birthday: birthday of person e.g. 31/01/1999
-        :param number: mobile number of person e.g. 89245548798
-        """
-
         mask = self.data[actual.keys()] == actual.values()
 
         row_mask = [all(row) for i, row in mask.iterrows()]
@@ -124,12 +91,10 @@ class PhoneBook:
         return result
 
     def update_record(self, actual: dict, idx: int)-> bool:
-
         self.data.loc[idx, actual.keys()] = [*actual.values()]
         return True
 
     def delete_record(self, actual: dict) -> bool:
-
         data = self.find_record(actual)
 
         if data.shape[0] == 0:
